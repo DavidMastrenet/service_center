@@ -23,12 +23,12 @@ CREATE TABLE `checkin_record` (
   `longitude` DOUBLE,
   `latitude` DOUBLE,
   `time` DATETIME,
-  `note` VARCHAR(20),
+  `note` VARCHAR(128),
   FOREIGN KEY (`taskId`) REFERENCES `checkin_task`(`taskId`),
   FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
 );
 
-CREATE TABLE `collect_task (
+CREATE TABLE `collect_task` (
   `taskId` INT AUTO_INCREMENT PRIMARY KEY,
   `taskName` VARCHAR(50),
   `taskType` VARCHAR(50),
