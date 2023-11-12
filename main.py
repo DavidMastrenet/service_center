@@ -46,40 +46,33 @@ def unauthorized():
     return redirect('/login')
 
 
-@app.route('/api/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect('/login')
+@app.route('/')
+def page_index():
+    return render_template('index.html')
 
 
 @app.route('/login')
-def user_login():
+def page_login():
     if current_user.is_authenticated:
         return redirect('/admin')
     return render_template('login.html')
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
 @app.route('/admin')
 @login_required
-def login_done():
+def page_admin():
     return render_template('admin.html')
 
 
 @app.route('/api')
-def index_page():
+def api_index():
     return jsonify({'production': 'Shanghai Normal University 2023 Computer Science (Teacher Education) Class 2 '
                                   'All-in-one Service',
                     'author': 'Hong Yuxuan', 'environment': 'prod'})
 
 
 @app.route('/api/user')
-def get_user():
+def api_user():
     cursor = db.cursor()
     query = "SELECT name FROM user WHERE uid=%s"
     cursor.execute(query, (f'{current_user.id}', ))
@@ -89,7 +82,7 @@ def get_user():
 
 # 登陆
 @app.route('/api/login', methods=['POST'])
-def login():
+def api_login():
     username = request.json.get('username')
     password = request.json.get('password')
     cursor = db.cursor()
@@ -103,10 +96,17 @@ def login():
     return jsonify({'msg': '登录成功'})
 
 
+@app.route('/api/logout')
+@login_required
+def api_logout():
+    logout_user()
+    return redirect('/login')
+
+
 # 添加管理员
 @app.route('/api/admin/add', methods=['POST'])
 @login_required
-def add_admin():
+def api_admin_add():
     cursor = db.cursor()
     query = "SELECT * FROM user WHERE uid=%s AND tag=%s"
     cursor.execute(query, (current_user.id, "管理员", ))
@@ -128,7 +128,7 @@ def add_admin():
 # 删除管理员
 @app.route('/api/admin/delete', methods=['POST'])
 @login_required
-def delete_admin():
+def api_admin_delete():
     cursor = db.cursor()
     query = "SELECT * FROM user WHERE uid=%s AND tag=%s"
     cursor.execute(query, (current_user.id, "管理员", ))
@@ -148,7 +148,7 @@ def delete_admin():
 # 修改密码
 @app.route('/api/admin/edit', methods=['POST'])
 @login_required
-def edit_admin():
+def api_admin_edit():
     username = current_user.id
     password = request.json.get('password')
     if not username or not password:
@@ -163,7 +163,7 @@ def edit_admin():
 # 添加签到任务
 @app.route('/api/checkin/create', methods=['POST'])
 @login_required
-def create_checkin_task():
+def api_checkin_create():
     task_name = request.json.get('taskName')
     expire_time = request.json.get('expireTime')
     uid = current_user.id
@@ -179,7 +179,7 @@ def create_checkin_task():
 
 # 签到
 @app.route('/api/checkin/do', methods=['POST'])
-def do_checkin():
+def api_checkin_do():
     task_id = request.json.get('taskId')
     uid = request.json.get('uid')
     longitude = request.json.get("location")['lng']
@@ -207,7 +207,7 @@ def do_checkin():
 # 请假
 @app.route('/api/checkin/leave', methods=['POST'])
 @login_required
-def do_leave():
+def api_checkin_leave():
     task_id = request.json.get('taskId')
     uid = request.json.get('uid')
     time = datetime.datetime.now()
@@ -226,7 +226,7 @@ def do_leave():
 
 # 查看签到任务表
 @app.route('/api/checkin/task', methods=['GET'])
-def list_checkin_task():
+def api_checkin_task():
     cursor = db.cursor()
     query = """SELECT t.taskId, t.taskName, t.expireTime, u.name  
          FROM checkin_task t 
@@ -255,10 +255,10 @@ def list_checkin_task():
         return jsonify(data)
 
 
-# 查看签到情况
+# 查看未签到名单
 @app.route('/api/checkin/list', methods=['GET'])
 @login_required
-def list_checkin_status():
+def api_checkin_list():
     task_id = request.args.get('taskId')
     cursor = db.cursor()
 
@@ -282,10 +282,10 @@ def list_checkin_status():
     return jsonify(data)
 
 
-# 查看签到情况
+# 查看签到记录
 @app.route('/api/checkin/record', methods=['GET'])
 @login_required
-def list_checkin_record():
+def api_checkin_record():
     task_id = request.args.get('taskId')
     cursor = db.cursor()
 
@@ -311,7 +311,7 @@ def list_checkin_record():
 # 添加收集任务
 @app.route('/api/collect/create', methods=['POST'])
 @login_required
-def create_collect_task():
+def api_collect_create():
     task_name = request.json.get('taskName')
     expire_time = request.json.get('expireTime')
     task_type = request.json.get('taskType')
@@ -328,7 +328,7 @@ def create_collect_task():
 
 # 查看收集任务表
 @app.route('/api/collect/task', methods=['GET'])
-def list_collect_task():
+def api_collect_task():
     if not request.args.get('taskType'):
         return jsonify({'items': []})
     task_type = request.args.get('taskType')
@@ -361,10 +361,10 @@ def list_collect_task():
         return jsonify(data)
 
 
-# 查看签到情况
+# 查看未提交名单
 @app.route('/api/collect/list', methods=['GET'])
 @login_required
-def list_collect_status():
+def api_collect_list():
     task_id = request.args.get('taskId')
     cursor = db.cursor()
 
@@ -388,10 +388,10 @@ def list_collect_status():
     return jsonify(data)
 
 
-# 查看收集情况
+# 查看提交记录
 @app.route('/api/collect/record', methods=['GET'])
 @login_required
-def list_collect_record():
+def api_collect_record():
     task_id = request.args.get('taskId')
     cursor = db.cursor()
 
@@ -416,7 +416,7 @@ def list_collect_record():
 
 # 图片上传
 @app.route('/api/upload', methods=['POST'])
-def upload_image():
+def api_upload():
     image = request.files['file']
     filename = uuid.uuid4().hex + '.png'
     image.save(os.path.join('upload', filename))
@@ -432,7 +432,7 @@ def upload_image():
 
 # 收集提交
 @app.route('/api/collect/do', methods=['POST'])
-def do_collect():
+def api_collect_do():
     task_id = request.json.get('taskId')
     uid = request.json.get('uid')
     task_type = request.json.get('taskType')
@@ -462,7 +462,7 @@ def do_collect():
 # 抽签用户组
 @app.route('/api/lottery/list', methods=['GET'])
 @login_required
-def lottery_list():
+def api_lottery_list():
     cursor = db.cursor()
     query = "SELECT DISTINCT role FROM user_role"
     cursor.execute(query, ())
@@ -491,7 +491,7 @@ def lottery_list():
 # 抽签
 @app.route('/api/lottery/do', methods=['POST'])
 @login_required
-def lottery_do():
+def api_lottery_do():
     cursor = db.cursor()
     role = request.json.get('select')
     num = request.json.get('num')
