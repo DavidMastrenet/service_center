@@ -175,7 +175,10 @@
                                   type: "crud",
                                   api: "/api/checkin/record?taskId=${taskId}",
                                   headerToolbar: [
-                                      "export-excel",
+                                      {
+                                        type: "export-excel",
+                                        filename: "${taskName}签到记录",
+                                      },
                                       "reload"
                                   ],
                                   syncLocation: false,
@@ -219,7 +222,10 @@
                                   type: "crud",
                                   api: "/api/checkin/list?taskId=${taskId}",
                                   headerToolbar: [
-                                      "export-excel",
+                                      {
+                                        type: "export-excel",
+                                        filename: "${taskName}未签到名单",
+                                      },
                                       "reload"
                                   ],
                                   syncLocation: false,
@@ -335,7 +341,10 @@
                                   type: "crud",
                                   api: "/api/collect/list?taskId=${taskId}",
                                   headerToolbar: [
-                                      "export-excel",
+                                      {
+                                        type: "export-excel",
+                                        filename: "${taskName}未提交名单",
+                                      },
                                       "reload"
                                   ],
                                   syncLocation: false,
@@ -400,7 +409,10 @@
                                   type: "crud",
                                   api: "/api/collect/record?taskId=${taskId}",
                                   headerToolbar: [
-                                      "export-excel",
+                                      {
+                                        type: "export-excel",
+                                        filename: "${taskName}收集结果",
+                                      },
                                       "reload"
                                   ],
                                   syncLocation: false,
@@ -436,7 +448,10 @@
                                   type: "crud",
                                   api: "/api/collect/list?taskId=${taskId}",
                                   headerToolbar: [
-                                      "export-excel",
+                                      {
+                                        type: "export-excel",
+                                        filename: "${taskName}未提交名单",
+                                      },
                                       "reload"
                                   ],
                                   syncLocation: false,
