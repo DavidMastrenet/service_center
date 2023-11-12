@@ -419,7 +419,7 @@ def list_collect_record():
 def upload_image():
     image = request.files['file']
     filename = uuid.uuid4().hex + '.png'
-    image.save('/home/center_backend/' + os.path.join('upload', filename))
+    image.save(os.path.join('upload', filename))
     response = {
         "status": 0,
         "msg": "",
