@@ -239,19 +239,18 @@
                                       label: "学号"
                                     },
                                     {
-                                      type: "form",
-                                      title: "",
-                                      data: {
-                                        uid: "$(uid)",
-                                        taskId: "${taskId}",
-                                      },
-                                      actions: [
-                                        {
-                                          type: "submit",
-                                          label: "请假"
-                                        }
-                                      ],
-                                      api: "/api/checkin/leave",
+                                      type: "button",
+                                      actionType: "ajax",
+                                      label: "请假",
+                                      confirmText: "确认 ${name}请假？",
+                                      confirmTitle: "请假确认",
+                                      api: {
+                                        url: "/api/checkin/leave",
+                                        data: {
+                                          uid: "${uid}",
+                                          taskId: "${taskId}",
+                                        },
+                                      }
                                     }
                                   ]
                                 }
