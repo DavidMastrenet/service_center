@@ -20,11 +20,11 @@ def download_file(filename):
 
 # 连接数据库
 db = mysql.connector.connect(
-        host=os.getenv("db.host"),
-        user=os.getenv("db.user"),
-        password=os.getenv("db.password"),
-        database=os.getenv("db.database")
-    )
+    host=os.getenv("db.host"),
+    user=os.getenv("db.user"),
+    password=os.getenv("db.password"),
+    database=os.getenv("db.database")
+)
 
 
 class User(UserMixin):
@@ -75,7 +75,7 @@ def api_index():
 def api_user():
     cursor = db.cursor()
     query = "SELECT name FROM user WHERE uid=%s"
-    cursor.execute(query, (f'{current_user.id}', ))
+    cursor.execute(query, (f'{current_user.id}',))
     user = cursor.fetchone()
     return jsonify({'user': f'{user[0]}'})
 
@@ -87,7 +87,7 @@ def api_login():
     password = request.json.get('password')
     cursor = db.cursor()
     query = "SELECT * FROM user WHERE uid=%s AND password=%s"
-    cursor.execute(query, (username, password, ))
+    cursor.execute(query, (username, password,))
     user = cursor.fetchone()
     if user is None:
         return jsonify({'msg': '用户名或密码错误'}), 401
@@ -109,7 +109,7 @@ def api_logout():
 def api_admin_add():
     cursor = db.cursor()
     query = "SELECT * FROM user WHERE uid=%s AND tag=%s"
-    cursor.execute(query, (current_user.id, "管理员", ))
+    cursor.execute(query, (current_user.id, "管理员",))
     user = cursor.fetchone()
     if user is None:
         return jsonify({'msg': '无权操作！'}), 401
@@ -131,7 +131,7 @@ def api_admin_add():
 def api_admin_delete():
     cursor = db.cursor()
     query = "SELECT * FROM user WHERE uid=%s AND tag=%s"
-    cursor.execute(query, (current_user.id, "管理员", ))
+    cursor.execute(query, (current_user.id, "管理员",))
     user = cursor.fetchone()
     if user is None:
         return jsonify({'msg': '无权操作！'}), 401
@@ -155,7 +155,7 @@ def api_admin_edit():
         return jsonify({'msg': '数据不完整！'}), 404
     cursor = db.cursor()
     query = "UPDATE user SET password=%s WHERE uid=%s"
-    cursor.execute(query, (password, username, ))
+    cursor.execute(query, (password, username,))
     db.commit()
     return jsonify({'msg': '密码修改成功'})
 
@@ -172,7 +172,7 @@ def api_checkin_create():
     formatted_date = expire_time_formatted.strftime("%Y-%m-%d %H:%M:%S")
     cursor = db.cursor()
     cursor.execute("INSERT INTO checkin_task(taskName, expireTime, uid) VALUES(%s, %s, %s)",
-                   (task_name, formatted_date, uid, ))
+                   (task_name, formatted_date, uid,))
     db.commit()
     return jsonify({'msg': '创建成功'})
 
@@ -189,17 +189,17 @@ def api_checkin_do():
         return jsonify({'msg': '无法获取位置信息！'}), 404
     if not uid or not task_id:
         return jsonify({'msg': '数据不完整！'}), 404
-    cursor = db.cursor()
+    do_cursor = db.cursor()
     query = "SELECT * FROM checkin_record WHERE uid=%s AND taskId=%s"
-    cursor.execute(query, (uid, task_id, ))
-    user = cursor.fetchall()
+    do_cursor.execute(query, (uid, task_id,))
+    user = do_cursor.fetchall()
     if user:
         return jsonify({'msg': '请勿重复签到！'}), 404
     time = datetime.datetime.now()
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO checkin_record(taskId, uid, longitude, latitude, time, note) "
-                   "VALUES(%s, %s, %s, %s, %s, %s)",
-                   (task_id, uid, longitude, latitude, time, address, ))
+    in_cursor = db.cursor()
+    in_cursor.execute("INSERT INTO checkin_record(taskId, uid, longitude, latitude, time, note) "
+                      "VALUES(%s, %s, %s, %s, %s, %s)",
+                      (task_id, uid, longitude, latitude, time, address,))
     db.commit()
     return jsonify({'msg': '签到成功'})
 
@@ -219,7 +219,7 @@ def api_checkin_leave():
     task = cursor.fetchone()
     note = f"由{task[0]}请假"
     cursor.execute("INSERT INTO checkin_record(taskId, uid, time, note) VALUES(%s, %s, %s, %s)",
-                   (task_id, uid, time, note, ))
+                   (task_id, uid, time, note,))
     db.commit()
     return jsonify({'msg': '请假成功'})
 
@@ -227,12 +227,12 @@ def api_checkin_leave():
 # 查看签到任务表
 @app.route('/api/checkin/task', methods=['GET'])
 def api_checkin_task():
-    cursor = db.cursor()
+    list_cursor = db.cursor()
     query = """SELECT t.taskId, t.taskName, t.expireTime, u.name  
          FROM checkin_task t 
          JOIN user u ON t.uid = u.uid"""
-    cursor.execute(query, ())
-    tasks = cursor.fetchall()
+    list_cursor.execute(query, ())
+    tasks = list_cursor.fetchall()
     if tasks is None:
         return jsonify({'msg': '无任务'}), 404
     if request.args.get('getValid'):
@@ -242,13 +242,13 @@ def api_checkin_task():
                 valid_tasks.append(task)
         if valid_tasks is None:
             return jsonify({'msg': '无有效任务'}), 404
-        column_names = [description[0] for description in cursor.description]
+        column_names = [description[0] for description in list_cursor.description]
         data = {
             'items': [dict(zip(column_names, row)) for row in valid_tasks]
         }
         return jsonify(data)
     else:
-        column_names = [description[0] for description in cursor.description]
+        column_names = [description[0] for description in list_cursor.description]
         data = {
             'items': [dict(zip(column_names, row)) for row in tasks]
         }
@@ -321,7 +321,7 @@ def api_collect_create():
     formatted_date = expire_time_formatted.strftime("%Y-%m-%d %H:%M:%S")
     cursor = db.cursor()
     cursor.execute("INSERT INTO collect_task(taskName, taskType, expireTime, uid) VALUES(%s, %s, %s, %s)",
-                   (task_name, task_type, formatted_date, uid, ))
+                   (task_name, task_type, formatted_date, uid,))
     db.commit()
     return jsonify({'msg': '创建成功'})
 
@@ -337,7 +337,7 @@ def api_collect_task():
          FROM collect_task t 
          JOIN user u ON t.uid = u.uid
          WHERE t.taskType=%s"""
-    cursor.execute(query, (task_type, ))
+    cursor.execute(query, (task_type,))
     tasks = cursor.fetchall()
     if tasks is None:
         return jsonify({'msg': '无任务'}), 404
@@ -446,7 +446,7 @@ def api_collect_do():
         return jsonify({'msg': '非法提交！'}), 404
     cursor = db.cursor()
     query = "SELECT * FROM collect_record WHERE uid=%s AND taskId=%s"
-    cursor.execute(query, (uid, task_id, ))
+    cursor.execute(query, (uid, task_id,))
     user = cursor.fetchall()
     if user:
         return jsonify({'msg': '请勿重复提交！'}), 404
@@ -454,7 +454,7 @@ def api_collect_do():
     cursor = db.cursor()
     cursor.execute("INSERT INTO collect_record(taskId, uid, content, time) "
                    "VALUES(%s, %s, %s, %s)",
-                   (task_id, uid, content, time, ))
+                   (task_id, uid, content, time,))
     db.commit()
     return jsonify({'msg': '提交成功'})
 
@@ -499,13 +499,13 @@ def api_lottery_do():
         num = 1
     if role == '全体':
         query = """SELECT name FROM user ORDER BY RAND() LIMIT %s"""
-        cursor.execute(query, (num, ))
+        cursor.execute(query, (num,))
     else:
         query = """SELECT u.name
              FROM user_role r
              JOIN user u ON r.uid = u.uid
              WHERE role=%s ORDER BY RAND() LIMIT %s"""
-        cursor.execute(query, (role, num, ))
+        cursor.execute(query, (role, num,))
     user = cursor.fetchall()
     if user is None:
         return jsonify({'msg': '用户不存在'}), 404
