@@ -9,7 +9,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <link rel="stylesheet" href="sdk.css" />
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css" />
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css" />
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css" />
     <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
@@ -179,7 +179,6 @@
                                         type: "export-excel",
                                         filename: "${taskName}签到记录",
                                       },
-                                      "reload"
                                   ],
                                   syncLocation: false,
                                   columns: [
@@ -226,7 +225,6 @@
                                         type: "export-excel",
                                         filename: "${taskName}未签到名单",
                                       },
-                                      "reload"
                                   ],
                                   syncLocation: false,
                                   columns: [
@@ -242,7 +240,7 @@
                                       type: "button",
                                       actionType: "ajax",
                                       label: "请假",
-                                      confirmText: "确认 ${name}请假？",
+                                      confirmText: "确认${name}请假？",
                                       confirmTitle: "请假确认",
                                       api: {
                                         url: "/api/checkin/leave",
@@ -344,7 +342,6 @@
                                         type: "export-excel",
                                         filename: "${taskName}未提交名单",
                                       },
-                                      "reload"
                                   ],
                                   syncLocation: false,
                                   columns: [
@@ -412,7 +409,6 @@
                                         type: "export-excel",
                                         filename: "${taskName}收集结果",
                                       },
-                                      "reload"
                                   ],
                                   syncLocation: false,
                                   columns: [
@@ -451,7 +447,6 @@
                                         type: "export-excel",
                                         filename: "${taskName}未提交名单",
                                       },
-                                      "reload"
                                   ],
                                   syncLocation: false,
                                   columns: [
