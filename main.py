@@ -1,4 +1,6 @@
-from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
+import io
+import zipfile
+from flask import Flask, request, jsonify, render_template, redirect, send_from_directory, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 import os
@@ -457,6 +459,33 @@ def api_collect_do():
                    (task_id, uid, content, time,))
     db.commit()
     return jsonify({'msg': '提交成功'})
+
+
+@app.route('/api/collect/download', methods=['GET'])
+@login_required
+def api_collect_download():
+    task_id = request.args.get('taskId')
+    cursor = db.cursor()
+    query = "SELECT taskName FROM collect_task WHERE taskId=%s"
+    cursor.execute(query, (task_id,))
+    task = cursor.fetchone()
+    if task is None:
+        return jsonify({'msg': '任务不存在'}), 404
+    query = """SELECT r.content, u.name  
+               FROM collect_record r
+               JOIN user u ON r.uid = u.uid
+               WHERE r.taskId=%s"""
+    cursor.execute(query, (task_id,))
+    records = cursor.fetchall()
+    memory_file = io.BytesIO()
+    with zipfile.ZipFile(memory_file, 'w') as zf:
+        for r in records:
+            path, name = r
+            filename = f'{name}-{path.split("/")[-1]}'  # 构造文件名
+            zf.write(path, filename)
+    memory_file.seek(0)
+    return send_file(memory_file, download_name=f'{task[0]}收集结果.zip',
+                     as_attachment=True)
 
 
 # 抽签用户组

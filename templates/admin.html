@@ -356,6 +356,15 @@
                                   ]
                                 }
                               }
+                            },
+                            {
+                                label: "打包下砸",
+                                type: "button",
+                                level: "link",
+                                actionType: "url",
+                                confirmText: "确认打包${taskName}收集结果吗？这可能需要很长时间！",
+                                confirmTitle: "打包确认",
+                                url: "/api/collect/download?taskId=${taskId}"
                             }
                           ]
                         }
