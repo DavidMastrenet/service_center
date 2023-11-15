@@ -103,6 +103,15 @@ def api_login():
     password_ = hashlib.sha1()
     password_.update(password.encode('utf-8'))
     password_enc = password_.hexdigest()
+    # 优先比较数据库
+    cursor = db.cursor()
+    query = "SELECT * FROM user WHERE uid=%s AND password=%s"
+    cursor.execute(query, (username, password_enc,))
+    login = cursor.fetchone()
+    if login:
+        user = User(username)
+        login_user(user)
+        return jsonify({'msg': '登录成功'})
     # 接入校园网登录模块
     login_url = "https://cas.shnu.edu.cn/cas/login?service=http%3A%2F%2Fcourse.shnu.edu.cn%2Feams%2Flogin.action"
     response = session.get(login_url)
@@ -502,6 +511,7 @@ def api_collect_do():
     return jsonify({'msg': '提交成功'})
 
 
+# 图片收集打包下载
 @app.route('/api/collect/download', methods=['GET'])
 @login_required
 def api_collect_download():
