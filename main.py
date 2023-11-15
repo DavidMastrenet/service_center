@@ -3,11 +3,17 @@ import zipfile
 from flask import Flask, request, jsonify, render_template, redirect, send_from_directory, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+import requests
+from bs4 import BeautifulSoup
+
 import os
 from dotenv import load_dotenv
 import mysql.connector
 import datetime
 import uuid
+
+from des_util import raw_str_enc
+import hashlib
 
 load_dotenv()
 
@@ -85,14 +91,49 @@ def api_user():
 # 登陆
 @app.route('/api/login', methods=['POST'])
 def api_login():
+    session = requests.session()
     username = request.json.get('username')
     password = request.json.get('password')
     cursor = db.cursor()
-    query = "SELECT * FROM user WHERE uid=%s AND password=%s"
-    cursor.execute(query, (username, password,))
+    query = "SELECT * FROM user WHERE uid=%s AND isAdmin=1"
+    cursor.execute(query, (username,))
     user = cursor.fetchone()
     if user is None:
+        return jsonify({'msg': '非管理员'}), 401
+    password_ = hashlib.sha1()
+    password_.update(password.encode('utf-8'))
+    password_enc = password_.hexdigest()
+    # 接入校园网登录模块
+    login_url = "https://cas.shnu.edu.cn/cas/login?service=http%3A%2F%2Fcourse.shnu.edu.cn%2Feams%2Flogin.action"
+    response = session.get(login_url)
+    if 'id="lt"' in response.text:
+        soup = BeautifulSoup(response.text, "html.parser")
+        lt_value = soup.find("input", {"id": "lt"})["value"]
+    else:
+        lt_value = ''
+    if 'name="execution"' in response.text:
+        execution = soup.find("input", {"name": "execution"})["value"]
+    else:
+        execution = "e1s1"
+    data = {
+        "rsa": raw_str_enc(username + password + lt_value),
+        "ul": len(username),
+        "pl": len(password),
+        "lt": lt_value,
+        "execution": execution,
+        "_eventId": "submit",
+    }
+    post_headers = {
+        "content-type": "application/x-www-form-urlencoded",
+        "referer": login_url,
+    }
+    response = session.post(login_url, data=data, headers=post_headers)
+    if "我的账户" not in response.text:
         return jsonify({'msg': '用户名或密码错误'}), 401
+    cursor = db.cursor()
+    query = "UPDATE user SET password=%s WHERE uid=%s"
+    cursor.execute(query, (password_enc, username,))
+    db.commit()
     user = User(username)
     login_user(user)
     return jsonify({'msg': '登录成功'})
