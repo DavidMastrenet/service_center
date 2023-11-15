@@ -424,7 +424,7 @@ def api_collect_do():
     task_id = request.json.get('taskId')
     uid = request.json.get('uid')
     task_type = request.json.get('taskType')
-    if not task_type or not task_id:
+    if not task_type or not task_id or not uid:
         return jsonify({'msg': '未知提交！'}), 404
     if task_type == "image":
         content = request.json.get('image')
