@@ -303,13 +303,12 @@ def api_collect_create():
     task_name = request.json.get('taskName')
     expire_time = request.json.get('expireTime')
     task_type = request.json.get('taskType')
+    if not task_type or not task_name or not expire_time:
+        return jsonify({'msg': '参数不完整'}), 404
     uid = current_user.id
-    # 参数校验
-    expire_time_formatted = datetime.datetime.now() + datetime.timedelta(minutes=expire_time)
-    formatted_date = expire_time_formatted.strftime("%Y-%m-%d %H:%M:%S")
     cursor = db.cursor()
     cursor.execute("INSERT INTO collect_task(taskName, taskType, expireTime, uid) VALUES(%s, %s, %s, %s)",
-                   (task_name, task_type, formatted_date, uid,))
+                   (task_name, task_type, expire_time, uid,))
     db.commit()
     return jsonify({'msg': '创建成功'})
 

@@ -1,525 +1,527 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8"/>
     <title>后台管理</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css" />
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css" />
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css"/>
     <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
     <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
     <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
     <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
     <style>
-      html,
-      body,
-      .app-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
     </style>
-  </head>
-  <body>
-    <div id="root" class="app-wrapper"></div>
-    <script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
-    <script type="text/javascript">
-      (function () {
+</head>
+<body>
+<div id="root" class="app-wrapper"></div>
+<script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
+<script type="text/javascript">
+    (function () {
         let amis = amisRequire('amis/embed');
         let amisJSON = {
-          type: "page",
-          initApi: "/api/user",
-          pullRefresh: {
-              disabled: false
-          },
-          body: {
-            type: "tabs",
-            swipeable: true,
-            toolbar: [
-              {
-                type: "avatar",
-                text: "${user}"
-              },
-              {
-                type: "button",
-                actionType: "url",
-                label: "返回首页",
-                size: "md",
-                url: "/",
-                blank: false
-              },
-            ],
-            tabs: [
-              {
-                title: "任务创建",
-                tab: [
+            type: "page",
+            initApi: "/api/user",
+            pullRefresh: {
+                disabled: false
+            },
+            body: {
+                type: "tabs",
+                swipeable: true,
+                toolbar: [
                     {
-                    type: 'page',
-                    body: {
-                      type: 'form',
-                      title: "创建签到任务（任务名称示例：11.10高等数学）",
-                      mode: 'horizontal',
-                      resetAfterSubmit: true,
-                      api: '/api/checkin/create',
-                      body: [
-                        {
-                          label: '任务名称',
-                          type: 'input-text',
-                          name: 'taskName'
-                        },
-                        {
-                          label: '过期时间（分钟）',
-                          type: 'input-number',
-                          name: 'expireTime'
-                        }
-                      ],
-                      actions: [
-                        {
-                          type: "submit",
-                          label: "创建"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    type: 'page',
-                    body: {
-                      type: 'form',
-                      title: "创建收集任务（任务名称示例：11.09医保截图收集）",
-                      mode: 'horizontal',
-                      resetAfterSubmit: true,
-                      api: '/api/collect/create',
-                      body: [
-                        {
-                          label: '任务名称',
-                          type: 'input-text',
-                          name: 'taskName'
-                        },
-                        {
-                          label: "收集类型",
-                          type: "select",
-                          name: "taskType",
-                          options: [
+                        type: "avatar",
+                        text: "${user}"
+                    },
+                    {
+                        type: "button",
+                        actionType: "url",
+                        label: "返回首页",
+                        size: "md",
+                        url: "/",
+                        blank: false
+                    },
+                ],
+                tabs: [
+                    {
+                        title: "任务创建",
+                        tab: [
                             {
-                              "label": "图片",
-                              "value": "image"
-                            },
-                            {
-                              "label": "文本",
-                              "value": "text"
-                            }
-                          ]
-                        },
-                        {
-                          label: '过期时间（分钟）',
-                          type: 'input-number',
-                          name: 'expireTime'
-                        }
-                      ],
-                      actions: [
-                        {
-                          type: "submit",
-                          label: "创建"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              },
-              {
-                title: "签到查看",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      type: "crud",
-                      api: "/api/checkin/task",
-                      syncLocation: false,
-                      columns: [
-                        {
-                          name: "taskId",
-                          label: "任务序号"
-                        },
-                        {
-                          name: "taskName",
-                          label: "任务名称"
-                        },
-                        {
-                          name: "expireTime",
-                          label: "过期时间"
-                        },
-                        {
-                          name: "name",
-                          label: "创建用户"
-                        },
-                        {
-                          type: "operation",
-                          label: "操作",
-                          buttons: [
-                            {
-                              label: "查看签到记录",
-                              type: "button",
-                              level: "link",
-                              actionType: "dialog",
-                              dialog: {
-                                title: "${taskName}签到记录",
+                                type: 'page',
                                 body: {
-                                  type: "crud",
-                                  api: "/api/checkin/record?taskId=${taskId}",
-                                  headerToolbar: [
-                                      {
-                                        type: "export-excel",
-                                        filename: "${taskName}签到记录",
-                                      },
-                                  ],
-                                  syncLocation: false,
-                                  columns: [
-                                    {
-                                      name: "name",
-                                      label: "姓名"
-                                    },
-                                    {
-                                      name: "uid",
-                                      label: "学号"
-                                    },
-                                    {
-                                      name: "longitude",
-                                      label: "经度"
-                                    },
-                                    {
-                                      name:'latitude',
-                                      label: "纬度"
-                                    },
-                                    {
-                                      name: "time",
-                                      label: "时间"
-                                    },
-                                    {
-                                      name: "note",
-                                      label: "备注"
-                                    }
-                                  ]
-                                }
-                              }
-                            },
-                            {
-                              label: "查看未签到名单",
-                              type: "button",
-                              level: "link",
-                              actionType: "dialog",
-                              dialog: {
-                                title: "${taskName}未签到名单",
-                                body: {
-                                  type: "crud",
-                                  api: "/api/checkin/list?taskId=${taskId}",
-                                  headerToolbar: [
-                                      {
-                                        type: "export-excel",
-                                        filename: "${taskName}未签到名单",
-                                      },
-                                  ],
-                                  syncLocation: false,
-                                  columns: [
-                                    {
-                                      name: "name",
-                                      label: "姓名"
-                                    },
-                                    {
-                                      name: "uid",
-                                      label: "学号"
-                                    },
-                                    {
-                                      type: "button",
-                                      actionType: "ajax",
-                                      label: "请假",
-                                      confirmText: "确认${name}请假？",
-                                      confirmTitle: "请假确认",
-                                      api: {
-                                        url: "/api/checkin/leave",
-                                        data: {
-                                          uid: "${uid}",
-                                          taskId: "${taskId}",
+                                    type: 'form',
+                                    title: "创建签到任务（任务名称示例：11.10高等数学）",
+                                    mode: 'horizontal',
+                                    resetAfterSubmit: true,
+                                    api: '/api/checkin/create',
+                                    body: [
+                                        {
+                                            label: '任务名称',
+                                            type: 'input-text',
+                                            name: 'taskName'
                                         },
-                                      }
-                                    }
-                                  ]
+                                        {
+                                            label: '过期时间（分钟）',
+                                            type: 'input-number',
+                                            name: 'expireTime'
+                                        }
+                                    ],
+                                    actions: [
+                                        {
+                                            type: "submit",
+                                            label: "创建"
+                                        }
+                                    ]
                                 }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                ]
-              },
-              {
-                title: "图片收集",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      type: "crud",
-                      api: "/api/collect/task?taskType=image",
-                      syncLocation: false,
-                      columns: [
-                        {
-                          name: "taskId",
-                          label: "任务序号"
-                        },
-                        {
-                          name: "taskName",
-                          label: "任务名称"
-                        },
-                        {
-                          name: "expireTime",
-                          label: "过期时间"
-                        },
-                        {
-                          name: "name",
-                          label: "创建用户"
-                        },
-                        {
-                          type: "operation",
-                          label: "操作",
-                          buttons: [
-                            {
-                              label: "查看收集结果",
-                              type: "button",
-                              level: "link",
-                              actionType: "dialog",
-                              dialog: {
-                                title: "${taskName}收集结果",
-                                body: {
-                                  type: "crud",
-                                  api: "/api/collect/record?taskId=${taskId}",
-                                  syncLocation: false,
-                                  columns: [
-                                    {
-                                      name: "name",
-                                      label: "姓名"
-                                    },
-                                    {
-                                      name: "uid",
-                                      label: "学号"
-                                    },
-                                    {
-                                      name: "content",
-                                      label: "图片",
-                                      type: "image",
-                                      src: "${content}",
-                                      enlargeAble: true,
-                                      thumbMode: "cover"
-                                    },
-                                    {
-                                      name: "time",
-                                      label: "提交时间"
-                                    }
-                                  ]
-                                }
-                              }
                             },
                             {
-                              label: "查看未提交名单",
-                              type: "button",
-                              level: "link",
-                              actionType: "dialog",
-                              dialog: {
-                                title: "${taskName}未提交名单",
+                                type: 'page',
                                 body: {
-                                  type: "crud",
-                                  api: "/api/collect/list?taskId=${taskId}",
-                                  headerToolbar: [
-                                      {
-                                        type: "export-excel",
-                                        filename: "${taskName}未提交名单",
-                                      },
-                                  ],
-                                  syncLocation: false,
-                                  columns: [
-                                    {
-                                      name: "name",
-                                      label: "姓名"
-                                    },
-                                    {
-                                      name: "uid",
-                                      label: "学号"
-                                    }
-                                  ]
+                                    type: 'form',
+                                    title: "创建收集任务（任务名称示例：11.09医保截图收集）",
+                                    mode: 'horizontal',
+                                    resetAfterSubmit: true,
+                                    api: '/api/collect/create',
+                                    body: [
+                                        {
+                                            label: '任务名称',
+                                            type: 'input-text',
+                                            name: 'taskName'
+                                        },
+                                        {
+                                            label: "收集类型",
+                                            type: "select",
+                                            name: "taskType",
+                                            options: [
+                                                {
+                                                    "label": "图片",
+                                                    "value": "image"
+                                                },
+                                                {
+                                                    "label": "文本",
+                                                    "value": "text"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            type: "input-datetime",
+                                            name: "expireTime",
+                                            label: "过期时间",
+                                            format: "YYYY-MM-DD HH:mm:ss",
+                                            minDate: "+10minutes"
+                                        }
+                                    ],
+                                    actions: [
+                                        {
+                                            type: "submit",
+                                            label: "创建"
+                                        }
+                                    ]
                                 }
-                              }
-                            },
-                            {
-                                label: "打包下载",
-                                type: "button",
-                                level: "link",
-                                actionType: "url",
-                                confirmText: "确认打包${taskName}收集结果吗？这可能需要很长时间！",
-                                confirmTitle: "打包确认",
-                                url: "/api/collect/download?taskId=${taskId}"
                             }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                ]
-              },
-              {
-                title: "材料收集",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      type: "crud",
-                      api: "/api/collect/task?taskType=text",
-                      syncLocation: false,
-                      columns: [
-                        {
-                          name: "taskId",
-                          label: "任务序号"
-                        },
-                        {
-                          name: "taskName",
-                          label: "任务名称"
-                        },
-                        {
-                          name: "expireTime",
-                          label: "过期时间"
-                        },
-                        {
-                          name: "name",
-                          label: "创建用户"
-                        },
-                        {
-                          type: "operation",
-                          label: "操作",
-                          buttons: [
+                        ]
+                    },
+                    {
+                        title: "签到查看",
+                        tab: [
                             {
-                              label: "查看收集结果",
-                              type: "button",
-                              level: "link",
-                              actionType: "dialog",
-                              dialog: {
-                                title: "${taskName}收集结果",
+                                type: "page",
                                 body: {
-                                  type: "crud",
-                                  api: "/api/collect/record?taskId=${taskId}",
-                                  headerToolbar: [
-                                      {
-                                        type: "export-excel",
-                                        filename: "${taskName}收集结果",
-                                      },
-                                  ],
-                                  syncLocation: false,
-                                  columns: [
-                                    {
-                                      name: "name",
-                                      label: "姓名"
-                                    },
-                                    {
-                                      name: "uid",
-                                      label: "学号"
-                                    },
-                                    {
-                                      name: "content",
-                                      label: "提交内容"
-                                    },
-                                    {
-                                      name: "time",
-                                      label: "提交时间"
-                                    }
-                                  ]
+                                    type: "crud",
+                                    api: "/api/checkin/task",
+                                    syncLocation: false,
+                                    columns: [
+                                        {
+                                            name: "taskId",
+                                            label: "任务序号"
+                                        },
+                                        {
+                                            name: "taskName",
+                                            label: "任务名称"
+                                        },
+                                        {
+                                            name: "expireTime",
+                                            label: "过期时间"
+                                        },
+                                        {
+                                            name: "name",
+                                            label: "创建用户"
+                                        },
+                                        {
+                                            type: "operation",
+                                            label: "操作",
+                                            buttons: [
+                                                {
+                                                    label: "查看签到记录",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "${taskName}签到记录",
+                                                        body: {
+                                                            type: "crud",
+                                                            api: "/api/checkin/record?taskId=${taskId}",
+                                                            headerToolbar: [
+                                                                {
+                                                                    type: "export-excel",
+                                                                    filename: "${taskName}签到记录",
+                                                                },
+                                                            ],
+                                                            syncLocation: false,
+                                                            columns: [
+                                                                {
+                                                                    name: "name",
+                                                                    label: "姓名"
+                                                                },
+                                                                {
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                },
+                                                                {
+                                                                    name: "longitude",
+                                                                    label: "经度"
+                                                                },
+                                                                {
+                                                                    name: 'latitude',
+                                                                    label: "纬度"
+                                                                },
+                                                                {
+                                                                    name: "time",
+                                                                    label: "时间"
+                                                                },
+                                                                {
+                                                                    name: "note",
+                                                                    label: "备注"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    label: "查看未签到名单",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "${taskName}未签到名单",
+                                                        body: {
+                                                            type: "crud",
+                                                            api: "/api/checkin/list?taskId=${taskId}",
+                                                            headerToolbar: [
+                                                                {
+                                                                    type: "export-excel",
+                                                                    filename: "${taskName}未签到名单",
+                                                                },
+                                                            ],
+                                                            syncLocation: false,
+                                                            columns: [
+                                                                {
+                                                                    name: "name",
+                                                                    label: "姓名"
+                                                                },
+                                                                {
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                },
+                                                                {
+                                                                    type: "button",
+                                                                    actionType: "ajax",
+                                                                    label: "请假",
+                                                                    confirmText: "确认${name}请假？",
+                                                                    confirmTitle: "请假确认",
+                                                                    api: {
+                                                                        url: "/api/checkin/leave",
+                                                                        data: {
+                                                                            uid: "${uid}",
+                                                                            taskId: "${taskId}",
+                                                                        },
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
-                              }
-                            },
-                            {
-                              label: "查看未提交名单",
-                              type: "button",
-                              level: "link",
-                              actionType: "dialog",
-                              dialog: {
-                                title: "${taskName}未提交名单",
-                                body: {
-                                  type: "crud",
-                                  api: "/api/collect/list?taskId=${taskId}",
-                                  headerToolbar: [
-                                      {
-                                        type: "export-excel",
-                                        filename: "${taskName}未提交名单",
-                                      },
-                                  ],
-                                  syncLocation: false,
-                                  columns: [
-                                    {
-                                      name: "name",
-                                      label: "姓名"
-                                    },
-                                    {
-                                      name: "uid",
-                                      label: "学号"
-                                    }
-                                  ]
-                                }
-                              }
                             }
-                          ]
-                        }
-                      ]
-                    }
-                  }
+                        ]
+                    },
+                    {
+                        title: "图片收集",
+                        tab: [
+                            {
+                                type: "page",
+                                body: {
+                                    type: "crud",
+                                    api: "/api/collect/task?taskType=image",
+                                    syncLocation: false,
+                                    columns: [
+                                        {
+                                            name: "taskId",
+                                            label: "任务序号"
+                                        },
+                                        {
+                                            name: "taskName",
+                                            label: "任务名称"
+                                        },
+                                        {
+                                            name: "expireTime",
+                                            label: "过期时间"
+                                        },
+                                        {
+                                            name: "name",
+                                            label: "创建用户"
+                                        },
+                                        {
+                                            type: "operation",
+                                            label: "操作",
+                                            buttons: [
+                                                {
+                                                    label: "查看收集结果",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "${taskName}收集结果",
+                                                        body: {
+                                                            type: "crud",
+                                                            api: "/api/collect/record?taskId=${taskId}",
+                                                            syncLocation: false,
+                                                            columns: [
+                                                                {
+                                                                    name: "name",
+                                                                    label: "姓名"
+                                                                },
+                                                                {
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                },
+                                                                {
+                                                                    name: "content",
+                                                                    label: "图片",
+                                                                    type: "image",
+                                                                    src: "${content}",
+                                                                    enlargeAble: true,
+                                                                    thumbMode: "cover"
+                                                                },
+                                                                {
+                                                                    name: "time",
+                                                                    label: "提交时间"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    label: "查看未提交名单",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "${taskName}未提交名单",
+                                                        body: {
+                                                            type: "crud",
+                                                            api: "/api/collect/list?taskId=${taskId}",
+                                                            headerToolbar: [
+                                                                {
+                                                                    type: "export-excel",
+                                                                    filename: "${taskName}未提交名单",
+                                                                },
+                                                            ],
+                                                            syncLocation: false,
+                                                            columns: [
+                                                                {
+                                                                    name: "name",
+                                                                    label: "姓名"
+                                                                },
+                                                                {
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    label: "打包下载",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "url",
+                                                    confirmText: "确认打包${taskName}收集结果吗？这可能需要很长时间！",
+                                                    confirmTitle: "打包确认",
+                                                    url: "/api/collect/download?taskId=${taskId}"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        title: "材料收集",
+                        tab: [
+                            {
+                                type: "page",
+                                body: {
+                                    type: "crud",
+                                    api: "/api/collect/task?taskType=text",
+                                    syncLocation: false,
+                                    columns: [
+                                        {
+                                            name: "taskId",
+                                            label: "任务序号"
+                                        },
+                                        {
+                                            name: "taskName",
+                                            label: "任务名称"
+                                        },
+                                        {
+                                            name: "expireTime",
+                                            label: "过期时间"
+                                        },
+                                        {
+                                            name: "name",
+                                            label: "创建用户"
+                                        },
+                                        {
+                                            type: "operation",
+                                            label: "操作",
+                                            buttons: [
+                                                {
+                                                    label: "查看收集结果",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "${taskName}收集结果",
+                                                        body: {
+                                                            type: "crud",
+                                                            api: "/api/collect/record?taskId=${taskId}",
+                                                            headerToolbar: [
+                                                                {
+                                                                    type: "export-excel",
+                                                                    filename: "${taskName}收集结果",
+                                                                },
+                                                            ],
+                                                            syncLocation: false,
+                                                            columns: [
+                                                                {
+                                                                    name: "name",
+                                                                    label: "姓名"
+                                                                },
+                                                                {
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                },
+                                                                {
+                                                                    name: "content",
+                                                                    label: "提交内容"
+                                                                },
+                                                                {
+                                                                    name: "time",
+                                                                    label: "提交时间"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    label: "查看未提交名单",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "${taskName}未提交名单",
+                                                        body: {
+                                                            type: "crud",
+                                                            api: "/api/collect/list?taskId=${taskId}",
+                                                            headerToolbar: [
+                                                                {
+                                                                    type: "export-excel",
+                                                                    filename: "${taskName}未提交名单",
+                                                                },
+                                                            ],
+                                                            syncLocation: false,
+                                                            columns: [
+                                                                {
+                                                                    name: "name",
+                                                                    label: "姓名"
+                                                                },
+                                                                {
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        title: "抽签",
+                        tab: [
+                            {
+                                type: "page",
+                                body: {
+                                    api: "/api/lottery/do",
+                                    type: "form",
+                                    title: "看看谁是坠幸运de呢",
+                                    messages: "",
+                                    data: {
+                                        num: 1,
+                                    },
+                                    body: [
+                                        {
+                                            label: "用户组",
+                                            type: "select",
+                                            name: "select",
+                                            source: "/api/lottery/list"
+                                        },
+                                        {
+                                            label: "个数",
+                                            type: "input-number",
+                                            name: "num",
+                                        },
+                                        {
+                                            type: "static",
+                                            name: "name",
+                                            visibleOn: "typeof name !== 'undefined'",
+                                            label: "结果"
+                                        },
+                                    ]
+                                }
+                            },
+                        ]
+                    },
                 ]
-              },
-              {
-                title: "抽签",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      api: "/api/lottery/do",
-                      type: "form",
-                      title: "看看谁是坠幸运de呢",
-                      messages: "",
-                      data: {
-                        num: 1,
-                      },
-                      body: [
-                        {
-                          label: "用户组",
-                          type: "select",
-                          name: "select",
-                          source: "/api/lottery/list"
-                        },
-                        {
-                          label: "个数",
-                          type: "input-number",
-                          name: "num",
-                        },
-                        {
-                          type: "static",
-                          name: "name",
-                          visibleOn: "typeof name !== 'undefined'",
-                          label: "结果"
-                        },
-                      ]
-                    }
-                  },
-                ]
-              },
-            ]
-          }
+            }
         };
         let amisScoped = amis.embed('#root', amisJSON);
-      })();
-    </script>
-  </body>
+    })();
+</script>
+</body>
 </html>
 
