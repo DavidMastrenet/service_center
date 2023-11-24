@@ -1,282 +1,282 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8"/>
     <title>计师2班综合服务平台</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css" />
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css" />
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" href="https://lib.baomitu.com/amis/3.5.3/sdk.css"/>
+    <link rel="stylesheet" href="https://lib.baomitu.com/amis/3.5.3/helper.css"/>
+    <link rel="stylesheet" href="https://lib.baomitu.com/amis/3.5.3/iconfont.css"/>
     <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
     <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
     <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
     <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
     <style>
-      html,
-      body,
-      .app-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
     </style>
-  </head>
-  <body>
-    <div id="root" class="app-wrapper"></div>
-    <script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
-    <script type="text/javascript">
-      (function () {
+</head>
+<body>
+<div id="root" class="app-wrapper"></div>
+<script src="https://lib.baomitu.com/amis/3.5.3/sdk.js"></script>
+<script type="text/javascript">
+    (function () {
         let amis = amisRequire('amis/embed');
         let amisJSON = {
-          type: "page",
-          pullRefresh: {
-              disabled: false
-          },
-          body: {
-            type: "tabs",
-            toolbar: {
-              type: "button",
-              actionType: "url",
-              label: "后台管理",
-              size: "md",
-              url: "/login",
-              blank: false
+            type: "page",
+            pullRefresh: {
+                disabled: false
             },
-            swipeable: true,
-            tabs: [
-              {
-                title: '欢迎页',
-                body: {
-                  type: "tpl",
-                  tpl: '<p style="text-align:center">SHNU 2023级计师2班综合服务平台 V2 <br>当前环境：生产环境 <br>开发：hyx</p>',
-                }
-              },
-              {
-                title: "课程签到",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      type: "crud",
-                      api: "/api/checkin/task?getValid=1",
-                      syncLocation: false,
-                      columns: [
-                        {
-                          name: "taskId",
-                          label: "任务序号"
-                        },
-                        {
-                          name: "taskName",
-                          label: "任务名称"
-                        },
-                        {
-                          name: "expireTime",
-                          label: "过期时间"
-                        },
-                        {
-                          type: "operation",
-                          label: "操作",
-                          buttons: [
-                            {
-                              label: "签到",
-                              type: "button",
-                              actionType: "dialog",
-                              level: "primary",
-                              className: "m-b-sm",
-                              dialog: {
-                                title: "${taskName}签到",
-                                body: {
-                                  type: "form",
-                                  data: {
-                                    taskId: "${taskId}",
-                                  },
-                                  api: "post:/api/checkin/do",
-                                  body: [
-                                    {
-                                      "type": "input-number",
-                                      "name": "uid",
-                                      "label": "学号"
-                                    },
-                                    {
-                                      type: "location-picker",
-                                      name: "location",
-                                      autoSelectCurrentLoc: true,
-                                      onlySelectCurrentLoc: true,
-                                      ak: "7ADmHayyPbQh9PGSvhRKLG3v6D7sHKGN",
-                                      label: "地址"
-                                    },
-                                  ]
-                                },
-                                actions: [
-                                  {
-                                    type: "submit",
-                                    label: "签到",
-                                    level: "primary"
-                                  }
-                                ],
-                              }
-                            },
-                          ]
+            body: {
+                type: "tabs",
+                toolbar: {
+                    type: "button",
+                    actionType: "url",
+                    label: "后台管理",
+                    size: "md",
+                    url: "/login",
+                    blank: false
+                },
+                swipeable: true,
+                tabs: [
+                    {
+                        title: '欢迎页',
+                        body: {
+                            type: "tpl",
+                            tpl: '<p style="text-align:center">SHNU 2023级计师2班综合服务平台 V2 <br>当前环境：生产环境 <br>开发：hyx</p>',
                         }
-                      ]
-                    }
-                  }
-                ]
-              },
-              {
-                title: "图片收集",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      type: "crud",
-                      api: "/api/collect/task?getValid=1&taskType=image",
-                      syncLocation: false,
-                      columns: [
-                        {
-                          name: "taskId",
-                          label: "任务序号"
-                        },
-                        {
-                          name: "taskName",
-                          label: "任务名称"
-                        },
-                        {
-                          name: "expireTime",
-                          label: "过期时间"
-                        },
-                        {
-                          type: "operation",
-                          label: "操作",
-                          buttons: [
+                    },
+                    {
+                        title: "课程签到",
+                        tab: [
                             {
-                              label: "提交",
-                              type: "button",
-                              actionType: "dialog",
-                              level: "primary",
-                              className: "m-b-sm",
-                              dialog: {
-                                title: "${taskName}提交",
+                                type: "page",
                                 body: {
-                                  type: "form",
-                                  data: {
-                                    taskId: "${taskId}",
-                                    taskType: "image"
-                                  },
-                                  api: "post:/api/collect/do",
-                                  body: [
-                                    {
-                                      type: "input-number",
-                                      name: "uid",
-                                      label: "学号"
-                                    },
-                                    {
-                                      type: "input-image",
-                                      name: "image",
-                                      label: "图片",
-                                      receiver: "/api/upload"
-                                    },
-                                  ]
-                                },
-                                actions: [
-                                  {
-                                    type: "submit",
-                                    label: "提交",
-                                    level: "primary"
-                                  }
-                                ],
-                              }
-                            },
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                ]
-              },
-              {
-                title: "材料收集",
-                tab: [
-                  {
-                    type: "page",
-                    body: {
-                      type: "crud",
-                      api: "/api/collect/task?getValid=1&taskType=text",
-                      syncLocation: false,
-                      columns: [
-                        {
-                          name: "taskId",
-                          label: "任务序号"
-                        },
-                        {
-                          name: "taskName",
-                          label: "任务名称"
-                        },
-                        {
-                          name: "expireTime",
-                          label: "过期时间"
-                        },
-                        {
-                          type: "operation",
-                          label: "操作",
-                          buttons: [
+                                    type: "crud",
+                                    api: "/api/checkin/task?getValid=1",
+                                    syncLocation: false,
+                                    columns: [
+                                        {
+                                            name: "taskId",
+                                            label: "任务序号"
+                                        },
+                                        {
+                                            name: "taskName",
+                                            label: "任务名称"
+                                        },
+                                        {
+                                            name: "expireTime",
+                                            label: "过期时间"
+                                        },
+                                        {
+                                            type: "operation",
+                                            label: "操作",
+                                            buttons: [
+                                                {
+                                                    label: "签到",
+                                                    type: "button",
+                                                    actionType: "dialog",
+                                                    level: "primary",
+                                                    className: "m-b-sm",
+                                                    dialog: {
+                                                        title: "${taskName}签到",
+                                                        body: {
+                                                            type: "form",
+                                                            data: {
+                                                                taskId: "${taskId}",
+                                                            },
+                                                            api: "post:/api/checkin/do",
+                                                            body: [
+                                                                {
+                                                                    "type": "input-number",
+                                                                    "name": "uid",
+                                                                    "label": "学号"
+                                                                },
+                                                                {
+                                                                    type: "location-picker",
+                                                                    name: "location",
+                                                                    autoSelectCurrentLoc: true,
+                                                                    onlySelectCurrentLoc: true,
+                                                                    ak: "7ADmHayyPbQh9PGSvhRKLG3v6D7sHKGN",
+                                                                    label: "地址"
+                                                                },
+                                                            ]
+                                                        },
+                                                        actions: [
+                                                            {
+                                                                type: "submit",
+                                                                label: "签到",
+                                                                level: "primary"
+                                                            }
+                                                        ],
+                                                    }
+                                                },
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        title: "图片收集",
+                        tab: [
                             {
-                              label: "提交",
-                              type: "button",
-                              actionType: "dialog",
-                              level: "primary",
-                              className: "m-b-sm",
-                              dialog: {
-                                title: "${taskName}提交",
+                                type: "page",
                                 body: {
-                                  type: "form",
-                                  data: {
-                                    taskId: "${taskId}",
-                                    taskType: "text"
-                                  },
-                                  api: "post:/api/collect/do",
-                                  body: [
-                                    {
-                                      type: "input-number",
-                                      name: "uid",
-                                      label: "学号"
-                                    },
-                                    {
-                                      type: "input-text",
-                                      name: "content",
-                                      label: "信息",
-                                    },
-                                  ]
-                                },
-                                actions: [
-                                  {
-                                    type: "submit",
-                                    label: "提交",
-                                    level: "primary"
-                                  }
-                                ],
-                              }
-                            },
-                          ]
-                        }
-                      ]
-                    }
-                  }
+                                    type: "crud",
+                                    api: "/api/collect/task?getValid=1&taskType=image",
+                                    syncLocation: false,
+                                    columns: [
+                                        {
+                                            name: "taskId",
+                                            label: "任务序号"
+                                        },
+                                        {
+                                            name: "taskName",
+                                            label: "任务名称"
+                                        },
+                                        {
+                                            name: "expireTime",
+                                            label: "过期时间"
+                                        },
+                                        {
+                                            type: "operation",
+                                            label: "操作",
+                                            buttons: [
+                                                {
+                                                    label: "提交",
+                                                    type: "button",
+                                                    actionType: "dialog",
+                                                    level: "primary",
+                                                    className: "m-b-sm",
+                                                    dialog: {
+                                                        title: "${taskName}提交",
+                                                        body: {
+                                                            type: "form",
+                                                            data: {
+                                                                taskId: "${taskId}",
+                                                                taskType: "image"
+                                                            },
+                                                            api: "post:/api/collect/do",
+                                                            body: [
+                                                                {
+                                                                    type: "input-number",
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                },
+                                                                {
+                                                                    type: "input-image",
+                                                                    name: "image",
+                                                                    label: "图片",
+                                                                    receiver: "/api/upload"
+                                                                },
+                                                            ]
+                                                        },
+                                                        actions: [
+                                                            {
+                                                                type: "submit",
+                                                                label: "提交",
+                                                                level: "primary"
+                                                            }
+                                                        ],
+                                                    }
+                                                },
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        title: "材料收集",
+                        tab: [
+                            {
+                                type: "page",
+                                body: {
+                                    type: "crud",
+                                    api: "/api/collect/task?getValid=1&taskType=text",
+                                    syncLocation: false,
+                                    columns: [
+                                        {
+                                            name: "taskId",
+                                            label: "任务序号"
+                                        },
+                                        {
+                                            name: "taskName",
+                                            label: "任务名称"
+                                        },
+                                        {
+                                            name: "expireTime",
+                                            label: "过期时间"
+                                        },
+                                        {
+                                            type: "operation",
+                                            label: "操作",
+                                            buttons: [
+                                                {
+                                                    label: "提交",
+                                                    type: "button",
+                                                    actionType: "dialog",
+                                                    level: "primary",
+                                                    className: "m-b-sm",
+                                                    dialog: {
+                                                        title: "${taskName}提交",
+                                                        body: {
+                                                            type: "form",
+                                                            data: {
+                                                                taskId: "${taskId}",
+                                                                taskType: "text"
+                                                            },
+                                                            api: "post:/api/collect/do",
+                                                            body: [
+                                                                {
+                                                                    type: "input-number",
+                                                                    name: "uid",
+                                                                    label: "学号"
+                                                                },
+                                                                {
+                                                                    type: "input-text",
+                                                                    name: "content",
+                                                                    label: "信息",
+                                                                },
+                                                            ]
+                                                        },
+                                                        actions: [
+                                                            {
+                                                                type: "submit",
+                                                                label: "提交",
+                                                                level: "primary"
+                                                            }
+                                                        ],
+                                                    }
+                                                },
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
                 ]
-              },
-            ]
-          }
+            }
         }
         let amisScoped = amis.embed('#root', amisJSON);
-      })();
-    </script>
-  </body>
+    })();
+</script>
+</body>
 </html>
 
