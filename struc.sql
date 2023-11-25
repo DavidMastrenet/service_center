@@ -54,3 +54,11 @@ CREATE TABLE `user_role` (
   `createdBy` VARCHAR(20),
   FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
 );
+
+
+CREATE TABLE `log` (
+  `uid` VARCHAR(20),
+  `info` VARCHAR(256),
+  `time` DATETIME,
+  FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
+);

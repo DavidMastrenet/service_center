@@ -1,7 +1,7 @@
 import io
 import zipfile
 from flask import Flask, request, jsonify, render_template, redirect, send_from_directory, send_file
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 
 import requests
 from bs4 import BeautifulSoup
@@ -42,6 +42,15 @@ class User(UserMixin):
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def log(uid, info):
+    time = datetime.datetime.now()
+    log_cursor = db.cursor()
+    log_cursor.execute("INSERT INTO log(uid, info, time) "
+                       "VALUES(%s, %s, %s)",
+                       (uid, info, time,))
+    db.commit()
 
 
 @login_manager.user_loader
@@ -111,6 +120,7 @@ def api_login():
     if login:
         user = User(username)
         login_user(user)
+        log(username, "成功登录")
         return jsonify({'msg': '登录成功'})
     # 接入校园网登录模块
     login_url = "https://cas.shnu.edu.cn/cas/login?service=http%3A%2F%2Fcourse.shnu.edu.cn%2Feams%2Flogin.action"
@@ -145,6 +155,7 @@ def api_login():
     db.commit()
     user = User(username)
     login_user(user)
+    log(username, "成功登录")
     return jsonify({'msg': '登录成功'})
 
 
@@ -162,6 +173,7 @@ def api_checkin_create():
     cursor.execute("INSERT INTO checkin_task(taskName, expireTime, uid) VALUES(%s, %s, %s)",
                    (task_name, formatted_date, uid,))
     db.commit()
+    log(current_user.id, f"创建{task_name}签到任务，过期时间为{formatted_date}")
     return jsonify({'msg': '创建成功'})
 
 
@@ -189,6 +201,7 @@ def api_checkin_do():
                       "VALUES(%s, %s, %s, %s, %s, %s)",
                       (task_id, uid, longitude, latitude, time, address,))
     db.commit()
+    log(uid, f"进行{task_id}签到")
     return jsonify({'msg': '签到成功'})
 
 
@@ -209,6 +222,7 @@ def api_checkin_leave():
     cursor.execute("INSERT INTO checkin_record(taskId, uid, time, note) VALUES(%s, %s, %s, %s)",
                    (task_id, uid, time, note,))
     db.commit()
+    log(current_user.id, f"在{task_id}任务中，为{uid}请假")
     return jsonify({'msg': '请假成功'})
 
 
@@ -310,6 +324,7 @@ def api_collect_create():
     cursor.execute("INSERT INTO collect_task(taskName, taskType, expireTime, uid) VALUES(%s, %s, %s, %s)",
                    (task_name, task_type, expire_time, uid,))
     db.commit()
+    log(current_user.id, f"创建{task_name}收集任务，过期时间为{expire_time}")
     return jsonify({'msg': '创建成功'})
 
 
@@ -443,6 +458,7 @@ def api_collect_do():
                    "VALUES(%s, %s, %s, %s)",
                    (task_id, uid, content, time,))
     db.commit()
+    log(uid, f"进行{task_id}收集提交")
     return jsonify({'msg': '提交成功'})
 
 
@@ -470,6 +486,7 @@ def api_collect_download():
             filename = f'{name}-{path.split("/")[-1]}'  # 构造文件名
             zf.write(path, filename)
     memory_file.seek(0)
+    log(current_user.id, f"进行{task_id}收集文件的打包下载")
     return send_file(memory_file, download_name=f'{task[0]}收集结果.zip',
                      as_attachment=True)
 
@@ -524,6 +541,7 @@ def api_lottery_do():
     user = cursor.fetchall()
     if user is None:
         return jsonify({'msg': '用户不存在'}), 404
+    log(current_user.id, f"进行{role}用户组的抽签，抽签结果为{user}")
     return jsonify({'name': user})
 
 
