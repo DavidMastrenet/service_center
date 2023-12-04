@@ -3,7 +3,7 @@ SELECT 'center_dev';
 CREATE TABLE `user` (
   `uid` VARCHAR(20) PRIMARY KEY,
   `name` VARCHAR(20),
-  `password` VARCHAR(20),
+  `password` VARCHAR(128),
   `tag` VARCHAR(20),
   `isAdmin` TINYINT
 );
@@ -58,7 +58,14 @@ CREATE TABLE `user_role` (
 
 CREATE TABLE `log` (
   `uid` VARCHAR(20),
-  `info` VARCHAR(256),
+  `info` VARCHAR(1024),
   `time` DATETIME,
   FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
+);
+
+
+CREATE TABLE bbs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  content VARCHAR(1024),
+  time DATETIME DEFAULT CURRENT_TIMESTAMP
 );

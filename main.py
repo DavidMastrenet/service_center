@@ -232,7 +232,8 @@ def api_checkin_task():
     list_cursor = db.cursor()
     query = """SELECT t.taskId, t.taskName, t.expireTime, u.name  
          FROM checkin_task t 
-         JOIN user u ON t.uid = u.uid"""
+         JOIN user u ON t.uid = u.uid
+         ORDER BY t.taskId DESC"""
     list_cursor.execute(query, ())
     tasks = list_cursor.fetchall()
     if tasks is None:
@@ -338,7 +339,8 @@ def api_collect_task():
     query = """SELECT t.taskId, t.taskName, t.expireTime, t.taskType, u.name  
          FROM collect_task t 
          JOIN user u ON t.uid = u.uid
-         WHERE t.taskType=%s"""
+         WHERE t.taskType=%s
+         ORDER BY t.taskId DESC"""
     cursor.execute(query, (task_type,))
     tasks = cursor.fetchall()
     if tasks is None:
@@ -543,6 +545,26 @@ def api_lottery_do():
         return jsonify({'msg': '用户不存在'}), 404
     log(current_user.id, f"进行{role}用户组的抽签，抽签结果为{user}")
     return jsonify({'name': user})
+
+
+# 留言板
+@app.route('/api/bbs', methods=['GET', 'POST'])
+def api_bbs():
+    cursor = db.cursor()
+    if request.method == 'POST':
+        data = request.json
+        content = data.get('content')
+        cursor.execute("INSERT INTO bbs(content) VALUES(%s)",
+                       (content,))
+        db.commit()
+        return jsonify({'msg': '提交成功'})
+    cursor.execute("SELECT * FROM bbs ORDER BY id DESC")
+    results = cursor.fetchall()
+    column_names = [description[0] for description in cursor.description]
+    data = {
+        'items': [dict(zip(column_names, row)) for row in results]
+    }
+    return jsonify(data)
 
 
 if __name__ == '__main__':

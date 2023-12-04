@@ -53,10 +53,49 @@
                 tabs: [
                     {
                         title: '欢迎页',
-                        body: {
-                            type: "tpl",
-                            tpl: '<p style="text-align:center">SHNU 2023级计师2班综合服务平台 V2 <br>当前环境：生产环境 <br>开发：hyx</p>',
-                        }
+                        tab: [
+                            {
+                                type: 'page',
+                                title: '留言板',
+                                body: [
+                                    {
+                                        type: 'form',
+                                        title: '快来留言叭',
+                                        api: '/api/bbs',
+                                        resetAfterSubmit: true,
+                                        body: [
+                                            {
+                                                type: 'input-text',
+                                                name: 'content',
+                                                label: '留言内容'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: 'crud',
+                                        api: '/api/bbs',
+                                        columns: [
+                                            {
+                                                name: 'id',
+                                                label: '序号'
+                                            },
+                                            {
+                                                name: 'content',
+                                                label: '留言内容'
+                                            },
+                                            {
+                                                name: 'time',
+                                                label: '留言时间'
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                type: "tpl",
+                                tpl: '<p style="text-align:center">SHNU 2023级计师2班综合服务平台 V2 <br>当前环境：生产环境 <br>开发：hyx</p>',
+                            }
+                        ]
                     },
                     {
                         title: "课程签到",
