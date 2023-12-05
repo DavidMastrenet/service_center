@@ -423,7 +423,7 @@ def api_collect_record():
 # 修改收集任务截止时间
 @app.route('/api/collect/edit', methods=['POST'])
 @login_required
-def api_collect_update():
+def api_collect_edit():
     task_id = request.json.get('taskId')
     expire_time = request.json.get('expireTime')
     if not task_id or not expire_time:
