@@ -367,6 +367,32 @@
                                                     confirmText: "确认打包${taskName}收集结果吗？这可能需要很长时间！",
                                                     confirmTitle: "打包确认",
                                                     url: "/api/collect/download?taskId=${taskId}"
+                                                },
+                                                {
+                                                    label: "修改",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "修改${taskName}截止时间",
+                                                        body: {
+                                                            type: "form",
+                                                            api: "/api/collect/edit",
+                                                            data: {
+                                                                taskId: "${taskId}",
+                                                            },
+                                                            syncLocation: false,
+                                                            body: [
+                                                                {
+                                                                    type: "input-datetime",
+                                                                    name: "expireTime",
+                                                                    label: "新的过期时间",
+                                                                    format: "YYYY-MM-DD HH:mm:ss",
+                                                                    minDate: "+10minutes"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
                                                 }
                                             ]
                                         }
@@ -468,6 +494,32 @@
                                                                 {
                                                                     name: "uid",
                                                                     label: "学号"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    label: "修改",
+                                                    type: "button",
+                                                    level: "link",
+                                                    actionType: "dialog",
+                                                    dialog: {
+                                                        title: "修改${taskName}截止时间",
+                                                        body: {
+                                                            type: "form",
+                                                            api: "/api/collect/edit",
+                                                            data: {
+                                                                taskId: "${taskId}",
+                                                            },
+                                                            syncLocation: false,
+                                                            body: [
+                                                                {
+                                                                    type: "input-datetime",
+                                                                    name: "expireTime",
+                                                                    label: "新的过期时间",
+                                                                    format: "YYYY-MM-DD HH:mm:ss",
+                                                                    minDate: "+10minutes"
                                                                 }
                                                             ]
                                                         }

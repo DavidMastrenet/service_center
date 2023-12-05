@@ -420,6 +420,21 @@ def api_collect_record():
     return jsonify(data)
 
 
+# 修改收集任务截止时间
+@app.route('/api/collect/edit', methods=['POST'])
+@login_required
+def api_collect_update():
+    task_id = request.json.get('taskId')
+    expire_time = request.json.get('expireTime')
+    if not task_id or not expire_time:
+        return jsonify({'msg': '参数不完整'}), 404
+    cursor = db.cursor()
+    cursor.execute("UPDATE collect_task SET expireTime=%s WHERE taskId=%s", (expire_time, task_id, ))
+    db.commit()
+    log(current_user.id, f"修改{task_id}收集任务截止时间为{expire_time}")
+    return jsonify({'msg': '修改成功'})
+
+
 # 图片上传
 @app.route('/api/upload', methods=['POST'])
 def api_upload():
