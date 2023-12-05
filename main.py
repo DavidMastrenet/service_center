@@ -20,6 +20,9 @@ load_dotenv()
 app = Flask(__name__, static_url_path='/', static_folder='static')
 app.secret_key = os.getenv("secret.key")
 
+root_pwd = os.getenv("root_pwd")
+env = os.getenv("env")
+
 
 @app.route('/upload/<path:filename>')
 def download_file(filename):
@@ -65,7 +68,7 @@ def unauthorized():
 
 @app.route('/')
 def page_index():
-    return render_template('index.html')
+    return render_template('index.html', env = env)
 
 
 @app.route('/login')
@@ -83,8 +86,7 @@ def page_admin():
 
 @app.route('/api')
 def api_index():
-    return jsonify({'production': 'Shanghai Normal University 2023 Computer Science (Teacher Education) Class 2 '
-                                  'All-in-one Service',
+    return jsonify({'production': env,
                     'author': 'Hong Yuxuan', 'environment': 'prod'})
 
 
@@ -423,7 +425,7 @@ def api_collect_record():
 def api_upload():
     image = request.files['file']
     filename = uuid.uuid4().hex + '.png'
-    image.save(os.path.join('upload', filename))
+    image.save(root_pwd + os.path.join('upload', filename))
     response = {
         "status": 0,
         "msg": "",

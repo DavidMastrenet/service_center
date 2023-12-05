@@ -4,3 +4,6 @@ db.host=
 db.user=
 db.password=
 db.database=
+
+root_pwd=
+env=
