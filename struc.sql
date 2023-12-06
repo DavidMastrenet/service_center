@@ -1,5 +1,3 @@
-SELECT 'center_dev';
-
 CREATE TABLE `user` (
   `uid` VARCHAR(20) PRIMARY KEY,
   `name` VARCHAR(20),
@@ -47,7 +45,6 @@ CREATE TABLE `collect_record` (
   FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
 );
 
-
 CREATE TABLE `user_role` (
   `uid` VARCHAR(20),
   `role` VARCHAR(20),
@@ -55,14 +52,12 @@ CREATE TABLE `user_role` (
   FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
 );
 
-
 CREATE TABLE `log` (
   `uid` VARCHAR(20),
   `info` VARCHAR(1024),
   `time` DATETIME,
   FOREIGN KEY (`uid`) REFERENCES `user`(`uid`)
 );
-
 
 CREATE TABLE bbs (
   id INT AUTO_INCREMENT PRIMARY KEY,
